@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PhunnyPhoto</title>
+  <style>
+#video {
+  -webkit-animation-name: rotate; 
+  -webkit-animation-duration: 4s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: rotate; 
+  -moz-animation-duration: 4s; 
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+}
+@-webkit-keyframes rotate {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotate {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(360deg);}
+}  
+  </style>
+</head>
+ 
+<body>
+  <video id="video"></video>
+  <button id="startButton" type="button">Start</button> <br/>
+  <script>
+  (function() {
+    var video = document.querySelector('#video');
+    navigator.getUserMedia = (navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia);
+		
+    if (navigator.getUserMedia) {
+      document.querySelector("#startButton").addEventListener('click', startButton_Clicked);
+      				
+      function gotStream(stream) {
+        if (navigator.mozGetUserMedia) {
+          video.mozSrcObject = stream;
+        } else {
+          var vendorURL = window.URL || window.webkitURL;
+          video.src = vendorURL.createObjectURL(stream); 
+        }
+        video.play();
+      }
+        
+      function startButton_Clicked() {
+        this.disabled = true;
+        navigator.getUserMedia( { audio: false, video: true }, gotStream, error);
+      }
+      
+      function error(message) {
+        console.log(message);
+      }
+    } else {
+      document.querySelector("#startButton").disabled = true;
+      alert("Sorry, you can't use the mic in this web browser. Try the latest desktop version of Firefox, Chrome or Opera.");
+    }
+  })();
+  </script>
+</body>
+</html>
